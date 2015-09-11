@@ -1,115 +1,115 @@
 <?php
-	// функція завантаження зображення
+	// С„СѓРЅРєС†С–СЏ Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ Р·РѕР±СЂР°Р¶РµРЅРЅСЏ
 	function upload_image()
 	{
 		if($_FILES["filename"]["size"]==0)
 		{
-			echo ("Будь ласка, оберіть файл");
+			echo ("Р‘СѓРґСЊ Р»Р°СЃРєР°, РѕР±РµСЂС–С‚СЊ С„Р°Р№Р»");
 			exit;
 		}
 		
-		// перевірка розміру файлу (можна накласти обмеження в php.ini)
+		// РїРµСЂРµРІС–СЂРєР° СЂРѕР·РјС–СЂСѓ С„Р°Р№Р»Сѓ (РјРѕР¶РЅР° РЅР°РєР»Р°СЃС‚Рё РѕР±РјРµР¶РµРЅРЅСЏ РІ php.ini)
 		if($_FILES["filename"]["size"]>1024*1*1024)
 		{
-			echo ("Розмір файлу перевищує один мегабайт");
+			echo ("Р РѕР·РјС–СЂ С„Р°Р№Р»Сѓ РїРµСЂРµРІРёС‰СѓС” РѕРґРёРЅ РјРµРіР°Р±Р°Р№С‚");
 			exit;
 		}
 			
-		// перевірка відповідності типу файлу
+		// РїРµСЂРµРІС–СЂРєР° РІС–РґРїРѕРІС–РґРЅРѕСЃС‚С– С‚РёРїСѓ С„Р°Р№Р»Сѓ
 		if($_FILES["filename"]["type"]!="image/jpg" && $_FILES["filename"]["type"]!="image/jpeg" && $_FILES["filename"]["type"]!="image/png")
 		{
-			echo ("На жаль, формат файлу ".$_FILES["filename"]["type"]." не підтримується");
+			echo ("РќР° Р¶Р°Р»СЊ, С„РѕСЂРјР°С‚ С„Р°Р№Р»Сѓ ".$_FILES["filename"]["type"]." РЅРµ РїС–РґС‚СЂРёРјСѓС”С‚СЊСЃСЏ");
 			exit;
 		}
 			
-		// перевірка завантаження файлу
+		// РїРµСЂРµРІС–СЂРєР° Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ С„Р°Р№Р»Сѓ
 		if(is_uploaded_file($_FILES["filename"]["tmp_name"]))
 		{
-			// якщо файл завантажений успішно - переміщаємо в кінцеву директорію	
+			// СЏРєС‰Рѕ С„Р°Р№Р» Р·Р°РІР°РЅС‚Р°Р¶РµРЅРёР№ СѓСЃРїС–С€РЅРѕ - РїРµСЂРµРјС–С‰Р°С”РјРѕ РІ РєС–РЅС†РµРІСѓ РґРёСЂРµРєС‚РѕСЂС–СЋ	
      		$image_name = "images/thumbs/".$_FILES["filename"]["name"];
      		$image_name_view = $_FILES["filename"]["name"];
      		$image_name_big = "images/big/".$_FILES["filename"]["name"];
      				
      		move_uploaded_file($_FILES["filename"]["tmp_name"], "images/thumbs/".$_FILES["filename"]["name"]);
      						
-     		// копіювання
+     		// РєРѕРїС–СЋРІР°РЅРЅСЏ
      		$file = "images/thumbs/".$_FILES["filename"]["name"];
 			$newfile = "images/big/".$_FILES["filename"]["name"];		
      		if (!copy($file, $newfile)) 
      		{
-				echo 'не вдалося скопіювати'.$file.'...\n';
+				echo 'РЅРµ РІРґР°Р»РѕСЃСЏ СЃРєРѕРїС–СЋРІР°С‚Рё'.$file.'...\n';
 			}
 						
      		////////////////////////////////////////////////////////////////////////////////
      		$file_name = "images/thumbs/".$_FILES["filename"]["name"];
      		switch($_FILES['filename']['type']) 
 			{ 
-				// узнаем тип картинки 
+				// СѓР·РЅР°РµРј С‚РёРї РєР°СЂС‚РёРЅРєРё 
 				case "image/jpeg": $im = imagecreatefromjpeg($file_name); break; 
 				case "image/png": $im = imagecreatefrompng($file_name); break; 
 				case "image/jpg": $im = imagecreatefromjpeg($file_name); break;		
 			} 
 			
-			list($w,$h) = getimagesize($file_name); // берем высоту и ширину 
+			list($w,$h) = getimagesize($file_name); // Р±РµСЂРµРј РІС‹СЃРѕС‚Сѓ Рё С€РёСЂРёРЅСѓ 
 			if($w<$h && ($w/$h)<0.75)
 			{
-				$koe=$w/200; // вычисляем коэффициент 200 это ширина которая должна быть
-				$new_h=ceil($h/$koe); // с помощью коэффициента вычисляем высоту
-				$im1 = imagecreatetruecolor(200, $new_h); // создаем картинку
+				$koe=$w/200; // РІС‹С‡РёСЃР»СЏРµРј РєРѕСЌС„С„РёС†РёРµРЅС‚ 200 СЌС‚Рѕ С€РёСЂРёРЅР° РєРѕС‚РѕСЂР°СЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ
+				$new_h=ceil($h/$koe); // СЃ РїРѕРјРѕС‰СЊСЋ РєРѕСЌС„С„РёС†РёРµРЅС‚Р° РІС‹С‡РёСЃР»СЏРµРј РІС‹СЃРѕС‚Сѓ
+				$im1 = imagecreatetruecolor(200, $new_h); // СЃРѕР·РґР°РµРј РєР°СЂС‚РёРЅРєСѓ
 				imagecopyresampled($im1,$im,0,0,0,0,200,$new_h,imagesx($im),imagesy($im)); 
 			}
 			else if ($w>$h && ($h/$w)<0.75)
 			{
-				$koe=$w/700; // вычисляем коэффициент 200 это ширина которая должна быть
-				$new_h=ceil($h/$koe); // с помощью коэффициента вычисляем высоту
-				$im1 = imagecreatetruecolor(700, $new_h); // создаем картинку
+				$koe=$w/700; // РІС‹С‡РёСЃР»СЏРµРј РєРѕСЌС„С„РёС†РёРµРЅС‚ 200 СЌС‚Рѕ С€РёСЂРёРЅР° РєРѕС‚РѕСЂР°СЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ
+				$new_h=ceil($h/$koe); // СЃ РїРѕРјРѕС‰СЊСЋ РєРѕСЌС„С„РёС†РёРµРЅС‚Р° РІС‹С‡РёСЃР»СЏРµРј РІС‹СЃРѕС‚Сѓ
+				$im1 = imagecreatetruecolor(700, $new_h); // СЃРѕР·РґР°РµРј РєР°СЂС‚РёРЅРєСѓ
 				imagecopyresampled($im1,$im,0,0,0,0,700,$new_h,imagesx($im),imagesy($im)); 			
 			}
 			else
 			{
-				$koe=$w/300; // вычисляем коэффициент 200 это ширина которая должна быть
-				$new_h=ceil($h/$koe); // с помощью коэффициента вычисляем высоту
-				$im1 = imagecreatetruecolor(300, $new_h); // создаем картинку
+				$koe=$w/300; // РІС‹С‡РёСЃР»СЏРµРј РєРѕСЌС„С„РёС†РёРµРЅС‚ 200 СЌС‚Рѕ С€РёСЂРёРЅР° РєРѕС‚РѕСЂР°СЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ
+				$new_h=ceil($h/$koe); // СЃ РїРѕРјРѕС‰СЊСЋ РєРѕСЌС„С„РёС†РёРµРЅС‚Р° РІС‹С‡РёСЃР»СЏРµРј РІС‹СЃРѕС‚Сѓ
+				$im1 = imagecreatetruecolor(300, $new_h); // СЃРѕР·РґР°РµРј РєР°СЂС‚РёРЅРєСѓ
 				imagecopyresampled($im1,$im,0,0,0,0,300,$new_h,imagesx($im),imagesy($im)); 
 			}
-			imageconvolution($im1, array( // улучшаем четкость
+			imageconvolution($im1, array( // СѓР»СѓС‡С€Р°РµРј С‡РµС‚РєРѕСЃС‚СЊ
 			array(-1,-1,-1), 
 			array(-1,16,-1), 
 			array(-1,-1,-1)), 8, 0); 
-			imagejpeg($im1, $file_name, 100); // переводим в jpg
+			imagejpeg($im1, $file_name, 100); // РїРµСЂРµРІРѕРґРёРј РІ jpg
 			imagedestroy($im); 
 			imagedestroy($im1);
 			/////////////////////////////////////////////////////////////////////////////
 					
-			echo "Зображення успішно додане";
+			echo "Р—РѕР±СЂР°Р¶РµРЅРЅСЏ СѓСЃРїС–С€РЅРѕ РґРѕРґР°РЅРµ";
 			
 			?>
 			<div class="container-fluid">
-				<a href="upload.html">Додати ще...<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+				<a href="upload.html">Р”РѕРґР°С‚Рё С‰Рµ...<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
 			</div>
 	
 			<div class="container-fluid">
-				<a href="index.php">До галереї<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+				<a href="index.php">Р”Рѕ РіР°Р»РµСЂРµС—<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
 			</div>
 			<?
 						
-			// клас зображення
+			// РєР»Р°СЃ Р·РѕР±СЂР°Р¶РµРЅРЅСЏ
 			include "image_class.php";
-			// новий екземпляр класу
+			// РЅРѕРІРёР№ РµРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСѓ
 			$object = new Image;
-			// поточний час
+			// РїРѕС‚РѕС‡РЅРёР№ С‡Р°СЃ
 			$today = date("y-m-d");
-			// заповнити параметри об'єкта
+			// Р·Р°РїРѕРІРЅРёС‚Рё РїР°СЂР°РјРµС‚СЂРё РѕР±'С”РєС‚Р°
 			$object->SetAttribute($_FILES["filename"]["name"], $today, $_FILES["filename"]["size"], $_POST['comment']);
-			// додати в базу
+			// РґРѕРґР°С‚Рё РІ Р±Р°Р·Сѓ
 			$object->AddDatabase();
 		}
 		else 
 		{
-			echo("Помилка завантаження файлу");
+			echo("РџРѕРјРёР»РєР° Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ С„Р°Р№Р»Сѓ");
 		}
 	}
 
-	// завантаження зображення
+	// Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ Р·РѕР±СЂР°Р¶РµРЅРЅСЏ
 	upload_image();
 ?>
